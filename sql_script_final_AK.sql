@@ -136,5 +136,19 @@ INNER JOIN rental r ON i.inventory_id = r.inventory_id
 GROUP BY f.title
 ORDER BY 2 DESC;
 
+-- 7f. Write a query to display how much business, in dollars, each store brought in
+SELECT s.store_id, CONCAT('$', FORMAT(SUM(amount),2)) as total_revenue FROM payment p
+LEFT JOIN staff on staff.staff_id = p.staff_id
+LEFT JOIN store s ON s.store_id = staff.store_id
+GROUP BY s.store_id
+ORDER BY 2 DESC; 
+
+-- 7g. Write a query to display for each store its store ID, city, and country.
+SELECT s.store_id, c.city, cn.country FROM store s
+INNER JOIN address a ON s.address_id = a.address_id 
+INNER JOIN city c on a.city_id = c.city_id
+INNER JOIN country cn ON c.country_id = cn.country_id
+
+
 
 

@@ -26,8 +26,8 @@ SELECT country_id, country from country
 WHERE country IN ('Afghanistan', 'Bangladesh', 'China');
 
 -- 3a. You want to keep a description of each actor. 
--- You don't think you will be performing queries on a description, so create a column in the table actor named description and use the data type BLOB (Make sure to research the type BLOB, as the difference between it and VARCHAR are significant).
-USE sakila;
+-- You don't think you will be performing queries on a description, so create a column in the table actor named description and use the data type BLOB 
+-- (Make sure to research the type BLOB, as the difference between it and VARCHAR are significant).
 ALTER TABLE actor add Description BLOB;
 
 -- 3b. Very quickly you realize that entering decriptions for each actor is too much effort. 
@@ -72,7 +72,7 @@ SELECT s.first_name,
     CONCAT('$', FORMAT(SUM(p.amount), 2)) as total_amt  
 FROM staff s
 INNER JOIN payment p ON s.staff_id = p.staff_id
-WHERE payment_date BETWEEN '2005-08-01' and '2005-09-01'
+WHERE MONTH(payment_date) = 8 AND YEAR(payment_date) = 2005
 GROUP BY s.staff_id;
 
 -- 6c. List each film and the number of actors who are listed for that film. Use tables film_actor and film. Use inner join.
@@ -82,28 +82,28 @@ GROUP BY film.title
 ORDER BY 1;
 
 -- 6d. How many copies of the film Hunchback Impossible exist in the inventory system?
-SELECT film.title, 
-COUNT(inventory.inventory_id) as total_copies_in_inventory FROM film
-INNER JOIN inventory on film.film_id = inventory.film_id
+SELECT f.title, 
+COUNT(i.inventory_id) as total_copies_in_inventory FROM film f
+INNER JOIN inventory i on f.film_id = i.film_id
 WHERE title = 'Hunchback Impossible'
 GROUP BY title;
 
 -- 6e. Using the tables payment and customer and the JOIN command, list the total paid by each customer.
 --  List the customers alphabetically by last name:
-SELECT customer.first_name, 
-customer.last_name, 
-SUM(payment.amount) as total_amount_paid 
-FROM customer 
-INNER JOIN payment  ON customer.customer_id = payment.customer_id
-GROUP BY customer.customer_id
+SELECT c.first_name, 
+c.last_name, 
+CONCAT('$', FORMAT(SUM(p.amount),2)) as total_amount_paid 
+FROM customer c
+INNER JOIN payment p ON c.customer_id = p.customer_id
+GROUP BY c.customer_id
 ORDER BY 2 ;
 
 -- 7a. The music of Queen and Kris Kristofferson have seen an unlikely resurgence. 
 -- As an unintended consequence, films starting with the letters K and Q have also soared in popularity. 
 -- Use subqueries to display the titles of movies starting with the letters K and Q whose language is English.
 SELECT title FROM film 
-WHERE ( title LIKE 'K%' OR title LIKE 'Q%')
-AND language_id = (SELECT language_id from language where name = 'English');
+WHERE (title LIKE 'K%' OR title LIKE 'Q%')
+AND language_id = (SELECT language_id from language where `name` = 'English');
 
 -- 7b. Use subqueries to display all actors who appear in the film Alone Trip.
 SELECT first_name, last_name FROM actor
@@ -114,17 +114,17 @@ WHERE actor_id IN
 -- 7c. You want to run an email marketing campaign in Canada, for which you will need the names and email addresses of all Canadian customers. 
 -- Use joins to retrieve this information
 SELECT 
-CONCAT(c.first_name, ' ', c.Last_name) as CustomerName, 
+CONCAT(c.first_name, ' ', c.Last_name) as customer_name, 
 c.email,
-country.country 
+cty.country 
 FROM customer c
 INNER JOIN address a ON c.address_id = a.address_id
 INNER JOIN city ON city.city_id = a.city_id
-INNER JOIN country ON country.country_id = city.country_id
-WHERE country.country = 'Canada';
+INNER JOIN country cty ON cty.country_id = city.country_id
+WHERE cty.country = 'Canada';
 
 -- 7d. Sales have been lagging among young families, and you wish to target all family movies for a promotion. Identify all movies categorized as family films.
-SELECT f.title, c.`name` FROM film f
+SELECT f.title, c.`name` as category FROM film f
 LEFT JOIN film_category fc ON f.film_id = fc.film_id
 LEFT JOIN category c ON c.category_id = fc.category_id
 WHERE c.`name` = 'Family';

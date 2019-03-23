@@ -147,7 +147,19 @@ ORDER BY 2 DESC;
 SELECT s.store_id, c.city, cn.country FROM store s
 INNER JOIN address a ON s.address_id = a.address_id 
 INNER JOIN city c on a.city_id = c.city_id
-INNER JOIN country cn ON c.country_id = cn.country_id
+INNER JOIN country cn ON c.country_id = cn.country_id;
+
+-- 7h. List the top five genres in gross revenue in descending order. 
+-- (Hint: you may need to use the following tables: category, film_category, inventory, payment, and rental.)
+SELECT cat.`name` as genre, CONCAT('$', FORMAT(SUM(p.amount),2)) as gross_revenue
+FROM category cat
+INNER JOIN film_category fcat ON fcat.category_id = cat.category_id
+INNER JOIN	inventory inv ON inv.film_id = fcat.film_id
+INNER JOIN rental r ON r.inventory_id = inv.inventory_id
+INNER JOIN payment p ON p.rental_id = r.rental_id
+GROUP BY `name`
+ORDER BY 2 DESC
+LIMIT 5;
 
 
 

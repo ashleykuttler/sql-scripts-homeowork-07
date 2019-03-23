@@ -1,2 +1,2 @@
-# sql-scripts-homeowork-07
+# sql-scripts-homework-07
 data analysis using MySQL

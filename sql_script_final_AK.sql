@@ -134,7 +134,7 @@ SELECT f.title, COUNT(r.rental_id) as total_rentals from film f
 INNER JOIN inventory i ON i.film_id = f.film_id
 INNER JOIN rental r ON i.inventory_id = r.inventory_id
 GROUP BY f.title
-ORDER BY 2 DESC;
+ORDER BY 2 DESC, 1;
 
 -- 7f. Write a query to display how much business, in dollars, each store brought in
 SELECT s.store_id, CONCAT('$', FORMAT(SUM(amount),2)) as total_revenue FROM payment p
